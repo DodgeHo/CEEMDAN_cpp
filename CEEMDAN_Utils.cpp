@@ -83,7 +83,7 @@ vector<vector<double>> EMD(vector<double> data, double sd) {
 	vector<vector<double>>imfs;
 	bool last_imf = false;
 	vector<double> residue = data;
-	double leftBound = 0, RightBound = 0;	//±ß½çµ¼Êý
+	double leftBound = 0, RightBound = 0;
 
 	for (int i = 0; i < 20; ++i) {
 		vector<double> h_prev = residue;
@@ -204,19 +204,15 @@ vector<double> vecDoubleMinus(vector<double> subtractee, double subtracter) {
 	return diff;
 }
 
-vector<double> meanNewSeq
-(vector<double> signal_prev,
-	vector<double> &maxima_vals, vector<double> &minima_vals) {
-
+vector<double> meanNewSeq(vector<double> signal_prev, vector<double>& maxima_vals, vector<double>& minima_vals) {
 	/*
 	mean = 0.5*(maxima_vals + minima_vals)
 	h = h_prev - mean
 	*/
-
 	int L = int(signal_prev.size());
-	vector<double> h(L, 0);
+	vector<double> h(L);
 	for (int i = 0; i < L; i++) {
-		h[i] = signal_prev[i] - (maxima_vals[i] + minima_vals[i]) * 0.5;
+		h[i] = signal_prev[i] - 0.5 * (maxima_vals[i] + minima_vals[i]);
 	}
 	return h;
 }
@@ -224,8 +220,8 @@ vector<double> meanNewSeq
 static void argrelMaxminList(
 	vector<double> signal,
 	vector<double>& maxlist, vector<double>& minlist,
-	vector<double> &maxSiglist, vector<double>& minSiglist
-	) {
+	vector<double>& maxSiglist, vector<double>& minSiglist
+) {
 	maxlist.resize(1.0, 0);
 	minlist.resize(1.0, 0);
 	int L = int(signal.size());
@@ -235,26 +231,20 @@ static void argrelMaxminList(
 	maxSiglist.resize(1, signal[0]);
 	minSiglist.resize(1, signal[0]);
 
-	for (int i = 1; i <= L-2; i++){
-		if (signal[i] > signal[i - 1]  && signal[i] > signal[i + 1]){
-			maxlist.emplace_back(double(i));
-			maxSiglist.emplace_back(signal[i]);
+	for (int i = 1; i <= L - 2; i++) {
+		if (signal[i] > signal[i - 1] && signal[i] > signal[i + 1]) {
+			maxlist.push_back(double(i));
+			maxSiglist.push_back(signal[i]);
 		}
-		else if (signal[i] < signal[i - 1] && signal[i] < signal[i + 1]){
-			minlist.emplace_back(double(i));
-			minSiglist.emplace_back(signal[i]);
+		else if (signal[i] < signal[i - 1] && signal[i] < signal[i + 1]) {
+			minlist.push_back(double(i));
+			minSiglist.push_back(signal[i]);
 		}
 	}
 
-	maxlist.emplace_back(double(L-1));
-	minlist.emplace_back(double(L - 1));
-	maxSiglist.emplace_back(signal[L - 1]);
-	minSiglist.emplace_back(signal[L - 1]);
+	maxlist.push_back(double(L - 1));
+	minlist.push_back(double(L - 1));
+	maxSiglist.push_back(signal[L - 1]);
+	minSiglist.push_back(signal[L - 1]);
 	return;
 }
-
-
-
-
-
-

@@ -1,20 +1,20 @@
 //----------------------------------------------------------------------------
-// ÎÄ¼şÃû£ºSpline.h
+// æ–‡ä»¶åï¼šSpline.h
 //----------------------------------------------------------------------------
-// ¹¦ÄÜ:	Ê¹ÓÃÈı´ÎÑùÌõÇúÏß½øĞĞ²åÖµ
+// åŠŸèƒ½:	ä½¿ç”¨ä¸‰æ¬¡æ ·æ¡æ›²çº¿è¿›è¡Œæ’å€¼
 //----------------------------------------------------------------------------
-// ËµÃ÷£º	1.Ìá¹©ÁËÁ½ÖÖ±ß½çÌõ¼şµÄÉè¶¨·½Ê½£º
-//				1)¸ø¶¨¶ËµãµÄÒ»½×µ¼
-//				2)¸ø¶¨¶ËµãµÄ¶ş½×µ¼
-//			2.Ìá¹©ÁËÈıÖÖ²åÖµ¼ÆËã·½Ê½£º
-//				1)¸ø¶¨Ò»¸öµã¼ÆËã¶ÔÓ¦²åÖµ,¿ÉÄÜÅ×³öÍâ²åÖµÒì³£
-//				2)¸ø¶¨¶à¸öµã¼ÆËã¶ÔÓ¦²åÖµ£¬¿ÉÄÜÅ×³öÍâ²åÖµÒì³£
-//				3)Éè¶¨²åÖµµÄÊä³ö¸öÊı(ÖÁÉÙÎª2),×Ô¶¯ÔÚMax(x)ºÍMin(x)Ö®¼äµÈ¼ä¾àµÄÊä³ö²åÖµ.
-//				xÎªÒÑÖªÊı¾İ×Ô±äÁ¿ĞòÁĞ,¿ÉÄÜÅ×³öµãÊı¹ıÉÙÒì³£
+// è¯´æ˜ï¼š	1.æä¾›äº†ä¸¤ç§è¾¹ç•Œæ¡ä»¶çš„è®¾å®šæ–¹å¼ï¼š
+//				1)ç»™å®šç«¯ç‚¹çš„ä¸€é˜¶å¯¼
+//				2)ç»™å®šç«¯ç‚¹çš„äºŒé˜¶å¯¼
+//			2.æä¾›äº†ä¸‰ç§æ’å€¼è®¡ç®—æ–¹å¼ï¼š
+//				1)ç»™å®šä¸€ä¸ªç‚¹è®¡ç®—å¯¹åº”æ’å€¼,å¯èƒ½æŠ›å‡ºå¤–æ’å€¼å¼‚å¸¸
+//				2)ç»™å®šå¤šä¸ªç‚¹è®¡ç®—å¯¹åº”æ’å€¼ï¼Œå¯èƒ½æŠ›å‡ºå¤–æ’å€¼å¼‚å¸¸
+//				3)è®¾å®šæ’å€¼çš„è¾“å‡ºä¸ªæ•°(è‡³å°‘ä¸º2),è‡ªåŠ¨åœ¨Max(x)å’ŒMin(x)ä¹‹é—´ç­‰é—´è·çš„è¾“å‡ºæ’å€¼.
+//				xä¸ºå·²çŸ¥æ•°æ®è‡ªå˜é‡åºåˆ—,å¯èƒ½æŠ›å‡ºç‚¹æ•°è¿‡å°‘å¼‚å¸¸
 //----------------------------------------------------------------------------
-// ×÷Õß£º ÁõÑÇ±ò (https://www.cnblogs.com/yabin/p/6426849.html)
-// ´´½¨ÈÕÆÚ: 2017Äê2ÔÂ20ÈÕ
-// ĞŞ¸ÄÈÕÆÚ£º
+// ä½œè€…ï¼š åˆ˜äºšå½¬ (https://www.cnblogs.com/yabin/p/6426849.html)
+// åˆ›å»ºæ—¥æœŸ: 2017å¹´2æœˆ20æ—¥
+// ä¿®æ”¹æ—¥æœŸï¼š
 //-----------------------------------------------------------------------------
 
 #ifndef _SPLINE_H
@@ -23,12 +23,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#pragma warning (disable:4290)		//vs2010ÖĞc++±àÒëÆ÷²»»á¶Ôº¯ÊıÅ×³öÒì³£½øĞĞ¼ì²â£¬Ö±½ÓºöÂÔÕâ¸ö¾¯¸æ
+#pragma warning (disable:4290)		//vs2010ä¸­c++ç¼–è¯‘å™¨ä¸ä¼šå¯¹å‡½æ•°æŠ›å‡ºå¼‚å¸¸è¿›è¡Œæ£€æµ‹ï¼Œç›´æ¥å¿½ç•¥è¿™ä¸ªè­¦å‘Š
 
-//ÒòÎªÀïÃæµÄÀàÃû¶¼±È½Ï¶Ì,ÎªÁË·ÀÖ¹ÖØÃûÕâÀïÓÃÒ»¸öÃüÃû¿Õ¼ä½øĞĞ°ü¹ü
-namespace SplineSpace		
+//å› ä¸ºé‡Œé¢çš„ç±»åéƒ½æ¯”è¾ƒçŸ­,ä¸ºäº†é˜²æ­¢é‡åè¿™é‡Œç”¨ä¸€ä¸ªå‘½åç©ºé—´è¿›è¡ŒåŒ…è£¹
+namespace SplineSpace
 {
-	class SplineFailure		//Òì³£Àà
+	class SplineFailure		//å¼‚å¸¸ç±»
 	{
 	private:
 		const char* Message;
@@ -37,68 +37,68 @@ namespace SplineSpace
 		const char* GetMessage();
 	};
 
-	class SplineInterface		//½Ó¿ÚÀà
+	class SplineInterface		//æ¥å£ç±»
 	{
 	public:
-		//µ¥µã²åÖµ:
-		//x->ÊäÈë×Ô±äÁ¿(ÊäÈë)
-		//y->·µ»Ø²åÖµ½á¹û(Êä³ö)
-		//Èç¹ûx²»ÊÇÄÚ²åÖµµãÔò²åÖµÊ§°Ü
-		virtual bool SinglePointInterp(const double x,double y)=0;
-		//¶àµã²åÖµ:
-		//x->ÊäÈë×Ô±äÁ¿Êı×éÊ×Ö¸Õë,num->×Ô±äÁ¿¸öÊıµÄÒıÓÃ(ÊäÈë)
-		//y->·µ»Ø²åÖµ½á¹ûµÄÊ×Ö¸Õë(Êä³öÊı×é)
-		virtual bool MultiPointInterp(const double* x,const int num,double* y)=0;		
-		//×Ô¶¯²åÖµ:
-		//num->ĞèÒªÉú³ÉµÄ²åÖµ¸öÊıµÄÒıÓÃ(ÊäÈë)
-		//x->´æ·Å×Ô±äÁ¿Êı×éµÄÊ×Ö¸Õë(Êä³öÊı×é)
-		//y->¶ÔÓ¦ÄâºÏ½á¹ûµÄÊ×Ö¸Õë(Êä³öÊı×é)
-		virtual bool AutoInterp(const int num,double* x,double* y)=0;					
+		//å•ç‚¹æ’å€¼:
+		//x->è¾“å…¥è‡ªå˜é‡(è¾“å…¥)
+		//y->è¿”å›æ’å€¼ç»“æœ(è¾“å‡º)
+		//å¦‚æœxä¸æ˜¯å†…æ’å€¼ç‚¹åˆ™æ’å€¼å¤±è´¥
+		virtual bool SinglePointInterp(const double x, double y) = 0;
+		//å¤šç‚¹æ’å€¼:
+		//x->è¾“å…¥è‡ªå˜é‡æ•°ç»„é¦–æŒ‡é’ˆ,num->è‡ªå˜é‡ä¸ªæ•°çš„å¼•ç”¨(è¾“å…¥)
+		//y->è¿”å›æ’å€¼ç»“æœçš„é¦–æŒ‡é’ˆ(è¾“å‡ºæ•°ç»„)
+		virtual bool MultiPointInterp(const double* x, const int num, double* y) = 0;
+		//è‡ªåŠ¨æ’å€¼:
+		//num->éœ€è¦ç”Ÿæˆçš„æ’å€¼ä¸ªæ•°çš„å¼•ç”¨(è¾“å…¥)
+		//x->å­˜æ”¾è‡ªå˜é‡æ•°ç»„çš„é¦–æŒ‡é’ˆ(è¾“å‡ºæ•°ç»„)
+		//y->å¯¹åº”æ‹Ÿåˆç»“æœçš„é¦–æŒ‡é’ˆ(è¾“å‡ºæ•°ç»„)
+		virtual bool AutoInterp(const int num, double* x, double* y) = 0;
 
-		virtual ~SplineInterface(){};			
+		virtual ~SplineInterface() {};
 	};
 
-	enum BoundaryCondition		//±ß½çÌõ¼şÃ¶¾Ù
+	enum BoundaryCondition		//è¾¹ç•Œæ¡ä»¶æšä¸¾
 	{
-		GivenFirstOrder=1		//¸ø¶¨Ò»½×µ¼Êı
-		,GivenSecondOrder		//¸ø¶¨¶ş½×µ¼Êı
+		GivenFirstOrder = 1		//ç»™å®šä¸€é˜¶å¯¼æ•°
+		, GivenSecondOrder		//ç»™å®šäºŒé˜¶å¯¼æ•°
 	};
 
-	class Spline:public SplineInterface				//ÊµÏÖÀà
+	class Spline :public SplineInterface				//å®ç°ç±»
 	{
 	public:
-		//¹¹Ôìº¯Êı:
-		//x0->ÒÑÖªµÄ×Ô±äÁ¿Êı×éÊ×Ö¸Õë,y0->ÒÑÖªµÄÒò±äÁ¿Êı×éÊ×Ö¸Õë,num->ÒÑÖªÊı¾İµÄ¸öÊı
-		//bc->±ß½çÌõ¼ş,Ä¬ÈÏ¸ø¶¨¶ş½×µ¼Êı
-		//leftBoundary,rightBoundary×óÓÒ±ß½çµ¼ÊıÖµµÄÒıÓÃ,Ä¬ÈÏ¶¼ÊÇ0
-		Spline(const double* x0,const double* y0,const int num,
-			BoundaryCondition bc=GivenSecondOrder,const double leftBoundary=0,const double rightBoundary=0);
+		//æ„é€ å‡½æ•°:
+		//x0->å·²çŸ¥çš„è‡ªå˜é‡æ•°ç»„é¦–æŒ‡é’ˆ,y0->å·²çŸ¥çš„å› å˜é‡æ•°ç»„é¦–æŒ‡é’ˆ,num->å·²çŸ¥æ•°æ®çš„ä¸ªæ•°
+		//bc->è¾¹ç•Œæ¡ä»¶,é»˜è®¤ç»™å®šäºŒé˜¶å¯¼æ•°
+		//leftBoundary,rightBoundaryå·¦å³è¾¹ç•Œå¯¼æ•°å€¼çš„å¼•ç”¨,é»˜è®¤éƒ½æ˜¯0
+		Spline(const double* x0, const double* y0, const int num,
+			BoundaryCondition bc = GivenSecondOrder, const double leftBoundary = 0, const double rightBoundary = 0);
 
-		bool SinglePointInterp(const double x,double y)throw(SplineFailure);		//Ğéº¯ÊıÊµÏÖ
-		bool MultiPointInterp(const double* x,const int num,double* y)throw(SplineFailure);
-		bool AutoInterp(const int num,double* x,double* y)throw(SplineFailure);
+		bool SinglePointInterp(const double x, double y)throw(SplineFailure);		//è™šå‡½æ•°å®ç°
+		bool MultiPointInterp(const double* x, const int num, double* y)throw(SplineFailure);
+		bool AutoInterp(const int num, double* x, double* y)throw(SplineFailure);
 
 		~Spline();
-		
+
 	private:
-		//·½·¨
-		void PartialDerivative1(void);		//ÇóÒ»½×µ¼
-		void PartialDerivative2(void);		//Çó¶ş½×µ¼
-		//ÊôĞÔ
-		const double* GivenX;	//ÒÑÖªÊı¾İµÄ×Ô±äÁ¿
-		const double* GivenY;	//ÒÑÖªÊı¾İµÄÒò±äÁ¿
-		const int GivenNum;		//¸ø¶¨µÄÒÑÖªÊı¾İµãÊı
-		const BoundaryCondition Bc;	//±ß½çÀàĞÍ
+		//æ–¹æ³•
+		void PartialDerivative1(void);		//æ±‚ä¸€é˜¶å¯¼
+		void PartialDerivative2(void);		//æ±‚äºŒé˜¶å¯¼
+		//å±æ€§
+		const double* GivenX;	//å·²çŸ¥æ•°æ®çš„è‡ªå˜é‡
+		const double* GivenY;	//å·²çŸ¥æ•°æ®çš„å› å˜é‡
+		const int GivenNum;		//ç»™å®šçš„å·²çŸ¥æ•°æ®ç‚¹æ•°
+		const BoundaryCondition Bc;	//è¾¹ç•Œç±»å‹
 		const double LeftB;
 		const double RightB;
 
-		double* PartialDerivative;	//±£´æ¶ÔÓ¦µÄ¶ş½×»òÕßÒ»½×Æ«µ¼Êı
-		double MaxX;				//×Ô±äÁ¿µÄ×î´óÖµ
-		double MinX;				//×Ô±äÁ¿µÄ×îĞ¡Öµ
+		double* PartialDerivative;	//ä¿å­˜å¯¹åº”çš„äºŒé˜¶æˆ–è€…ä¸€é˜¶åå¯¼æ•°
+		double MaxX;				//è‡ªå˜é‡çš„æœ€å¤§å€¼
+		double MinX;				//è‡ªå˜é‡çš„æœ€å°å€¼
 
-		const double* SplineX;	//²åÖµ×Ô±äÁ¿
-		double* SplineY;		//²åÖµÒò±äÁ¿
-		const int* SplineNum;	//²åÖµ¸öÊı
+		const double* SplineX;	//æ’å€¼è‡ªå˜é‡
+		double* SplineY;		//æ’å€¼å› å˜é‡
+		const int* SplineNum;	//æ’å€¼ä¸ªæ•°
 	};
 }
 #endif
