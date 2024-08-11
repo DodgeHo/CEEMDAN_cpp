@@ -88,7 +88,7 @@ vector<vector<double>> EMD(vector<double> data, double sd) {
 	for (int i = 0; i < 20; ++i) {
 		vector<double> h_prev = residue;
 		vector<double> iterSignal;
-		for (int j = 0; j < 50; ++j) {
+		for (int j = 0; j < 100; ++j) {
 			vector<double> maxima_idx, minima_idx;
 			vector<double> maxSeq, minSeq;
 			vector<double> maxInterSeq(L, 0), minInterSeq(L, 0);
@@ -100,16 +100,16 @@ vector<vector<double>> EMD(vector<double> data, double sd) {
 			}
 
 			SplineSpace::Spline spmin(
-				(double*)minima_idx.data(), &minSeq[0],
+				minima_idx, minSeq,
 				int(minima_idx.size()), SplineSpace::GivenSecondOrder,
 				leftBound, RightBound);
-			spmin.MultiPointInterp(&timeSeq[0], L, &minInterSeq[0]);
+			spmin.MultiPointInterp(timeSeq, L, minInterSeq);
 
 			SplineSpace::Spline spmax(
-				(double*)maxima_idx.data(), &maxSeq[0],
+				maxima_idx, maxSeq,
 				int(maxima_idx.size()), SplineSpace::GivenSecondOrder,
 				leftBound, RightBound);
-			spmax.MultiPointInterp(&timeSeq[0], L, &maxInterSeq[0]);
+			spmax.MultiPointInterp(timeSeq, L, maxInterSeq);
 
 			iterSignal = meanNewSeq(h_prev, maxInterSeq, minInterSeq);
 			if (sdCal(iterSignal, h_prev) < sd)

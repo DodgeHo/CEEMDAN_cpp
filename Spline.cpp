@@ -1,43 +1,39 @@
 #include "Spline.h"
 #include <cstring>
 #include <algorithm>
-
 using namespace std;
 
-namespace SplineSpace
-{
-
-	//构造函数
-	Spline::Spline(const double* x0, const double* y0, const int num,
-		BoundaryCondition bc, const double leftBoundary, const double rightBoundary)
-		:GivenX(x0), GivenY(y0), GivenNum(num), Bc(bc), LeftB(leftBoundary), RightB(rightBoundary)
+namespace SplineSpace{
+	Spline::Spline(vector<double>& x0, vector<double>& y0, const int num,
+				BoundaryCondition bc, const double leftBoundary, const double rightBoundary)
+				:GivenX(x0), GivenY(y0), GivenNum(num), Bc(bc), LeftB(leftBoundary), RightB(rightBoundary)
 	{
-		if ((x0 == NULL) | (y0 == NULL) | (num < 3))
-		{
-			throw SplineFailure("构造失败,已知点数过少");
+		if(x0.empty() || y0.empty() || (num<3)){
+			throw SplineFailure("Points too few to create.");
 		}
-		PartialDerivative = new double[GivenNum];	//给偏导分配空间
-		MaxX = *max_element(GivenX, GivenX + GivenNum);
-		MinX = *min_element(GivenX, GivenX + GivenNum);
-		if (Bc == GivenFirstOrder)		//I型边界条件
+		PartialDerivative.resize(GivenNum, 0.0);	
+		MaxX = *max_element(GivenX.begin(), GivenX.begin() + num);
+		MinX = *min_element(GivenX.begin(), GivenX.begin() + num);
+		if(Bc==GivenFirstOrder)	{
 			PartialDerivative1();
-		else if (Bc == GivenSecondOrder)		//II型边界条件
+		}
+		else if(Bc == GivenSecondOrder){		
 			PartialDerivative2();
-		else
-		{
-			delete[] PartialDerivative;
-			throw SplineFailure("边界条件参数错误");
+		}
+		else{
+			PartialDerivative.clear();
+			throw SplineFailure("Wrong parameters for boundary conditions.");
 		}
 	}
 
-	//I型边界条件求偏导
+	//Type I Boundary Partial Derivative
 	void Spline::PartialDerivative1(void)
 	{
-		//  追赶法解方程求二阶偏导数
-		double* a = new double[GivenNum];                //  a:稀疏矩阵最下边一串数
-		double* b = new double[GivenNum];                //  b:稀疏矩阵最中间一串数
-		double* c = new double[GivenNum];                //  c:稀疏矩阵最上边一串数
-		double* d = new double[GivenNum];
+		// Using the tridiagonal matrix algorithm (Thomas algorithm) to solve for the second derivatives
+		double *a=new double[GivenNum];                //  a: The bottom diagonal of the tridiagonal matrix
+		double *b=new double[GivenNum];                //  b: The main diagonal of the tridiagonal matrix
+		double *c=new double[GivenNum];                //  c: The top diagonal of the tridiagonal matrix
+		double *d=new double[GivenNum];
 
 		double* f = new double[GivenNum];
 
@@ -46,10 +42,10 @@ namespace SplineSpace
 
 		double* h = new double[GivenNum];
 
-		for (int i = 0; i < GivenNum; i++)  b[i] = 2;          //  中间一串数为2
-		for (int i = 0; i < GivenNum - 1; i++)  h[i] = GivenX[i + 1] - GivenX[i];                   // 各段步长
-		for (int i = 1; i < GivenNum - 1; i++)  a[i] = h[i - 1] / (h[i - 1] + h[i]);
-		a[GivenNum - 1] = 1;
+		for(int i=0;i<GivenNum;i++)  b[i]=2;          //  middle nums are 2
+		for(int i=0;i<GivenNum-1;i++)  h[i]=GivenX[i+1]-GivenX[i];                   // steps
+		for(int i=1;i<GivenNum-1;i++)  a[i]=h[i-1]/(h[i-1]+h[i]);            
+		a[GivenNum-1]=1;
 
 		c[0] = 1;
 		for (int i = 1; i < GivenNum - 1; i++)  c[i] = h[i] / (h[i - 1] + h[i]);
@@ -62,8 +58,9 @@ namespace SplineSpace
 
 		for (int i = 1; i < GivenNum - 1; i++)  d[i] = 6 * (f[i] - f[i - 1]) / (h[i - 1] + h[i]);
 
-		bt[0] = c[0] / b[0];                                             //  追赶法求解方程
-		for (int i = 1; i < GivenNum - 1; i++)  bt[i] = c[i] / (b[i] - a[i] * bt[i - 1]);
+		bt[0]=c[0]/b[0];                                            
+		for(int i=1;i<GivenNum-1;i++)  bt[i]=c[i]/(b[i]-a[i]*bt[i-1]);
+
 
 		gm[0] = d[0] / b[0];
 		for (int i = 1; i <= GivenNum - 1; i++)  gm[i] = (d[i] - a[i] * gm[i - 1]) / (b[i] - a[i] * bt[i - 1]);
@@ -81,15 +78,14 @@ namespace SplineSpace
 		delete[] h;
 	}
 
-	//II型边界条件求偏导
+	//Type II Boundary Partial Derivative
 	void Spline::PartialDerivative2(void)
 	{
-		//  追赶法解方程求二阶偏导数
 
-		double* a = new double[GivenNum];                //  a:稀疏矩阵最下边一串数
-		double* b = new double[GivenNum];                //  b:稀疏矩阵最中间一串数
-		double* c = new double[GivenNum];                //  c:稀疏矩阵最上边一串数
-		double* d = new double[GivenNum];
+		double *a=new double[GivenNum];             
+		double *b=new double[GivenNum];        
+		double *c=new double[GivenNum];               
+		double *d=new double[GivenNum];
 
 		double* f = new double[GivenNum];
 
@@ -136,16 +132,16 @@ namespace SplineSpace
 		delete[] h;
 	}
 
-	//单个插值的实现
-	bool Spline::SinglePointInterp(const double x, double y)throw(SplineFailure)
-	{
-		if ((x < MinX) | (x > MaxX))
-			throw SplineFailure("不支持外插值");
-		int klo, khi, k;
-		klo = 0; khi = GivenNum - 1;
-		double hh, bb, aa;
+	//Single Point interpretation 
+	bool Spline::SinglePointInterp(const double x, double& y)throw(SplineFailure){
+		if( (x<MinX) || (x>MaxX) )
+			throw SplineFailure("No support for outer interoperation.");
+		int klo,khi,k;
+		klo=0; khi=GivenNum-1;
+		double hh,bb,aa;
 
-		while (khi - klo > 1)            //  二分法查找x所在区间段
+		// Using the binary search method 
+		while(khi-klo>1)         
 		{
 			k = (khi + klo) >> 1;
 			if (GivenX[k] > x)  khi = k;
@@ -160,38 +156,33 @@ namespace SplineSpace
 		return true;
 	}
 
-	//多个插值的实现
-	bool Spline::MultiPointInterp(const double* x, const int num, double* y)throw(SplineFailure)
-	{
-		for (int i = 0; i < num; i++)
+	//Multiple Points Interpretation.
+	bool Spline::MultiPointInterp(vector<double>& x, const int num, vector<double>& y)throw(SplineFailure){
+		for(int i = 0;i < num;i++)
 		{
 			SinglePointInterp(x[i], y[i]);
 		}
 		return true;
 	}
 
-	//自动多个插值的实现
-	bool Spline::AutoInterp(const int num, double* x, double* y)throw(SplineFailure)
-	{
-		if (num < 2)
-			throw SplineFailure("至少要输出两个点");
-		double perStep = (MaxX - MinX) / (num - 1);
+	// Auto Interpretation
+	bool Spline::AutoInterp(const int num, vector<double>& x, vector<double>& y)throw(SplineFailure){
+		if(num < 2)
+			throw SplineFailure("At least 2 points.");
 
-		for (int i = 0; i < num; i++)
-		{
-			x[i] = MinX + i * perStep;
-			SinglePointInterp(x[i], y[i]);
+		double perStep = (MaxX-MinX)/(num-1);
+		for(int i = 0;i < num;i++){
+			x[i] = MinX+i*perStep;
+			SinglePointInterp(x[i],y[i]);
 		}
 		return true;
 	}
 
-	Spline::~Spline()
-	{
-		delete[]  PartialDerivative;
+	Spline::~Spline(){
+		PartialDerivative.clear();	
 	}
 
-	//异常类实现
-	SplineFailure::SplineFailure(const char* msg) :Message(msg) {};
-	const char* SplineFailure::GetMessage() { return Message; }
+	SplineFailure::SplineFailure(const char* msg):Message(msg){};
+	const char* SplineFailure::GetMessage(){return Message;}
 
 }
